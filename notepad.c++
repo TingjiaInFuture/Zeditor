@@ -18,24 +18,33 @@ public:
     } row, *pr;
     pr r = new row;
     void read(char c[])
-    {   
+    {
         ifstream in(c);
-        if (!in.is_open()) {
-        char cmd[50];
-        cout << c << ": No such file.\nDo you want to create one?(y/n)" << endl;
-        char a=cin.get();
-        if (a=='y')
-        write(c);
-        else if(a!='n')
-        cout <<"无效输入.";
-        cin.getline(cmd, 50);       
-        return;
+        if (!in.is_open())
+        {
+            char cmd[50];
+            cout << c << ": No such file.\nDo you want to create one?(y/n)" << endl;
+            char a = cin.get();
+            if (a == 'y')
+            {
+                free(r);
+                r = new row;
+                r->next = new row;
+                r->next->n = new node;
+                write(c);
+            }
+
+            else if (a != 'n')
+                cout << "无效输入.";
+            cin.getline(cmd, 50);
+            return;
         }
 
         int t;
-        r->n = new node; // 头结点
-        pn p = r->n;
-        pr l = r;
+        pr l = new row;
+        r->next = l;
+        l->n = new node; // 头结点
+        pn p = l->n;
         while ((t = in.get()) != -1)
         {
             p->next = new node;
@@ -43,21 +52,21 @@ public:
             p->c = t;
             if (t == '\n')
             {
-                r = r->next = new row;
-                p = r->n = new node;
+                l = l->next = new row;
+                p = l->n = new node;
             }
         }
-        r = l;
         in.close();
     }
 
     pr find(int i)
     { // 查找第i行
         pr l = r;
-        while (--i){
-            if ((l = l->next)==NULL)
-            throw 0;
-        }            
+        while (i--)
+        {
+            if ((l = l->next) == NULL)
+                throw 0;
+        }
         return l;
     }
 
@@ -77,18 +86,20 @@ public:
             x[1] = 1;
         }
         else
-            return NULL;
+            return p = NULL;
         return p;
     }
-    pr getnext(pr r){
-        if ((r=r->next)==NULL)
-        throw 0;
-        return r;        
+    pr getnext(pr r)
+    {
+        if ((r = r->next) == NULL)
+            throw 0;
+        return r;
     }
-    pn getnext(pn p){
-        if ((p=p->next)==NULL)
-        throw 0;
-        return p;        
+    pn getnext(pn p)
+    {
+        if ((p = p->next) == NULL)
+            throw 0;
+        return p;
     }
     void print(int i)
     { // 打印第i行
@@ -203,7 +214,7 @@ public:
         int n[cou + 1];
         nextval(n, c);
         pr l = find(no);
-        pn p = r->n;
+        pn p = l->n;
         while (i != cou + 1)
         {
 
@@ -225,8 +236,8 @@ public:
     {
         ofstream out(c);
         int x[2] = {1, 0};
-        pn p = r->n;
-        pr l = r;
+        pn p = find(1)->n;
+        pr l = find(1);
         while (getnext(l, p, x) != NULL)
             out << p->c;
         out.close();
@@ -234,9 +245,9 @@ public:
     int kuohao()
     {
         pn n = new node;
-        pn p = r->n;
+        pn p = find(1)->n;
         int x[2] = {0, 1};
-        pr l = r;
+        pr l = find(1);
         while (p = getnext(l, p, x))
         {
             if (p->c == 123 || p->c == 40)

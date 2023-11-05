@@ -16,6 +16,7 @@ int main()
         cout << "Chm lost!Please run with the resource!";
         return 0;
     }
+    h.print(2, 11);
     char c;
     int no, ni;
     notepad n;
@@ -23,11 +24,11 @@ int main()
     while ((c = cin.get()) != 'q')
     {
         char i = cin.get();
-        
+
         char cmd[50];
         if (i != ' ' && i != '\n')
         {
-            cout << "Invalid command,type in 'h' for help." << endl;
+            cout << "Invalid command,type 'h' for help." << endl;
             cin.getline(cmd, 50);
             cout << "(ZET)";
             continue;
@@ -39,13 +40,16 @@ int main()
             {
             case 'K':
             {
-
                 char c[msize];
                 int x[2] = {1, 0};
                 cin >> no >> c;
+                if (cin.fail())
+                    throw 0;
                 cin.get();
-                n.KMP(no, c, x);
-                cout << x[0] << ',' << x[1];
+                if (n.KMP(no, c, x))
+                    cout << x[0] << ',' << x[1];
+                else
+                    cout << 0;
                 cout << endl;
             }
             break;
@@ -58,7 +62,7 @@ int main()
                 cout << endl;
                 break;
             case 'h':
-                h.print(2, 6);
+                h.print(12, 20);
                 break;
             case 'w':
                 cin.getline(cmd, 50);
@@ -124,7 +128,9 @@ int main()
         }
         catch (...)
         {
+            cin.clear();
             cout << "Fatal error!Wrong syntax!Please read file in and try again!" << endl;
+            cin.getline(cmd, 50);
         }
         cout << "(ZET)";
     }
